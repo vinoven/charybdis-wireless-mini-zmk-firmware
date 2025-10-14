@@ -11,7 +11,6 @@ REPO_ROOT="${REPO_ROOT:-$PWD}"                     # path to original repo root
 SHIELD_PATH="${SHIELD_PATH:-boards/shields}"       # where shield folders live relative to repo root
 CONFIG_PATH="${CONFIG_PATH:-config}"               # where source keymaps/config live
 FALLBACK_BINARY="${FALLBACK_BINARY:-bin}"          # fallback firmware extension
-SCRIPT_PATH="$REPO_ROOT/scripts/convert_keymap.py" # path to script that converts keymaps
 
 
 # --- ZMK WORKSPACE ---
@@ -37,7 +36,11 @@ west zephyr-export
 
 # Set permissions so users can delete them
 echo "🛠️  Setting permissions on ZMK resources:"
-chmod -R 777 .west zmk zephyr modules zmk-pmw3610-driver
+for dir in .west zmk zephyr modules zmk-pmw3610-driver; do
+  if [ -d "$dir" ]; then
+    chmod -R 777 "$dir" 2>/dev/null || echo "⚠️  Could not set permissions on $dir (continuing...)"
+  fi
+done
 
 # # Optional: confirm checkout
 # echo "🛠️  West workspace ready. Project structure:"
@@ -51,11 +54,7 @@ KEYMAP_TEMP="/tmp/keymaps"
 rm -rf "$KEYMAP_TEMP" && mkdir -p "$KEYMAP_TEMP"
 cp "$REPO_ROOT/$CONFIG_PATH/keymap"/*.keymap "$KEYMAP_TEMP/"
 
-# Generate additional keymaps and adjust names
-# echo "🔧 Generating additional keymaps"
-# python3 "$SCRIPT_PATH" -c q2c --in-path "$KEYMAP_TEMP/charybdis.keymap"
-# python3 "$SCRIPT_PATH" -c q2g --in-path "$KEYMAP_TEMP/charybdis.keymap"
-# mv "$KEYMAP_TEMP/charybdis.keymap" "$KEYMAP_TEMP/qwerty.keymap"
+# Only QWERTY keymap is used, no conversions needed
 
 # Discover shields
 echo "🔍 Discovering shields in sandbox: $REPO_ROOT/$SHIELD_PATH"
@@ -135,10 +134,10 @@ for shield in "${shields[@]}"; do
   rm -rf "$ZMK_SHIELDS_DIR"/*
   mv "$BUILD_REPO/$SHIELD_PATH/$shield" "$ZMK_SHIELDS_DIR/"
 
-  # Ensure charybdis-layouts.dtsi is in the shield directory for overlay includes
-  LAYOUTS_SRC="$BASE_DIR/$CONFIG_PATH/charybdis-layouts.dtsi"
+  # Ensure scylla-layouts.dtsi is in the shield directory for overlay includes
+  LAYOUTS_SRC="$BASE_DIR/$CONFIG_PATH/scylla-layouts.dtsi"
   if [ -f "$LAYOUTS_SRC" ]; then
-    cp "$LAYOUTS_SRC" "$ZMK_SHIELDS_DIR/$shield/charybdis-layouts.dtsi"
+    cp "$LAYOUTS_SRC" "$ZMK_SHIELDS_DIR/$shield/scylla-layouts.dtsi"
   fi
 
   # Ensure charybdis_pmw3610.dtsi is in the shield directory for overlay includes
@@ -153,9 +152,9 @@ for shield in "${shields[@]}"; do
     cp "$LAYOUTS_SRC" "$ZMK_SHIELDS_DIR/$shield/charybdis_pointer.dtsi"
   fi
 
-  # Find all shield targets (e.g. charybdis_right, charybdis_left) in this shield folder
+  # Find all shield targets (e.g. scylla_right, scylla_left) in this shield folder
   mapfile -t shield_targets < <(
-    find "$ZMK_SHIELDS_DIR/$shield" -maxdepth 1 -type f -name "charybdis_*.overlay" -exec basename {} .overlay \;
+    find "$ZMK_SHIELDS_DIR/$shield" -maxdepth 1 -type f -name "scylla_*.overlay" -exec basename {} .overlay \;
   )
   if [ ${#shield_targets[@]} -eq 0 ]; then
     echo "⚠️  No *_left or *_right overlays found in $ZMK_SHIELDS_DIR/$shield, skipping."
@@ -184,7 +183,7 @@ for shield in "${shields[@]}"; do
 
       # Load in the keymap
       cp "$KEYMAP_TEMP/${keymap}.keymap" \
-         "$BASE_DIR/$CONFIG_PATH/charybdis.keymap"
+         "$BASE_DIR/$CONFIG_PATH/scylla.keymap"
 
       west build --pristine -s app \
         -d "$BUILD_DIR" \

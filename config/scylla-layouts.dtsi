@@ -1,9 +1,9 @@
 #include <physical_layouts.dtsi>
 
 / {
-    charybdis_physical_layout: charybdis_physical_layout {
+    scylla_physical_layout: scylla_physical_layout {
         compatible = "zmk,physical-layout";
-        display-name = "Charybdis 3x6";
+        display-name = "Scylla MK2";
         status = "okay";
         kscan = <&kscan0>;
         transform = <&default_transform>;
@@ -51,13 +51,21 @@
             , <&key_physical_attrs 100 100 1300  238       0     0     0>
             , <&key_physical_attrs 100 100 1400  238       0     0     0>
 
-            // Thumb Clusters
+            // Thumb Clusters - Left (5 keys: 3 top + 2 bottom)
             //                       w   h    x    y     rot    rx    ry
+            , <&key_physical_attrs 100 100  248  314       0     0     0>
             , <&key_physical_attrs 100 100  348  314       0     0     0>
-            , <&key_physical_attrs 100 100  348  314    1500   398   790>
-            , <&key_physical_attrs 100 100  348  320    3000   398   790>
-            , <&key_physical_attrs 100 100 1052  320 (-3000)  1102   790>
-            , <&key_physical_attrs 100 100 1052  314 (-1500)  1102   790>
+            , <&key_physical_attrs 100 100  448  314       0     0     0>
+            , <&key_physical_attrs 100 100  348  414       0     0     0>
+            , <&key_physical_attrs 100 100  448  414       0     0     0>
+            
+            // Thumb Clusters - Right (5 keys: 3 top + 2 bottom)
+            //                       w   h    x    y     rot    rx    ry
+            , <&key_physical_attrs 100 100  952  314       0     0     0>
+            , <&key_physical_attrs 100 100 1052  314       0     0     0>
+            , <&key_physical_attrs 100 100 1152  314       0     0     0>
+            , <&key_physical_attrs 100 100  952  414       0     0     0>
+            , <&key_physical_attrs 100 100 1052  414       0     0     0>
             ;
     };
 };

@@ -1,0 +1,13 @@
+file_format: "1"
+id: scylla
+name: Scylla
+type: shield
+url: https://github.com/Bastardkb/Scylla/
+requires: [pro_micro]
+features:
+  - Keys
+  - QWERTY
+  - Bluetooth/USB
+siblings:
+  - scylla_left
+  - scylla_right

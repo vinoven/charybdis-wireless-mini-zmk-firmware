@@ -30,7 +30,7 @@ jobs:
     # - name: Generate extra keymaps
     #   run: |
     #     echo "⚙️ Generating additional keymaps"
-    #     mv config/keymap/charybdis.keymap config/keymap/qwerty.keymap
+    #     mv config/keymap/scylla.keymap config/keymap/qwerty.keymap
 
     - uses: actions/upload-artifact@v4
       with: { name: generated-keymaps, path: config/keymap/ }
@@ -98,10 +98,10 @@ jobs:
         # Create overlays directory inside zmk/app
         mkdir -p zmk/app/overlays
 
-        # Only for bt/dongle builds, copy in the single keymap and any helpers
+        # Only for bt/reset builds, copy in the single keymap and any helpers
         if [[ "${{ matrix.combo.format }}" != "reset" ]]; then
           cp config/keymap/${{ matrix.combo.keymap }}.keymap \
-             zmk/app/overlays/charybdis.keymap
+             zmk/app/overlays/scylla.keymap
 
           # copy helper .dtsi files if they exist
           cp config/*.dtsi zmk/app/overlays/ 2>/dev/null || true
@@ -115,9 +115,9 @@ jobs:
       run: |
         ZMK_SHIELDS_DIR="$GITHUB_WORKSPACE/zmk/app/boards/shields"
         mkdir -p "$ZMK_SHIELDS_DIR"
-        cp -r "boards/shields/charybdis_${{ matrix.combo.format }}" "$ZMK_SHIELDS_DIR/"
+        cp -r "boards/shields/scylla" "$ZMK_SHIELDS_DIR/"
         for d in "$ZMK_SHIELDS_DIR"/*; do
-          for f in charybdis-layouts.dtsi charybdis_pmw3610.dtsi charybdis_pointer.dtsi; do
+          for f in scylla-layouts.dtsi charybdis_pmw3610.dtsi charybdis_pointer.dtsi; do
             [ -f "config/$f" ] && cp "config/$f" "$d/" || true
           done
         done
@@ -130,13 +130,12 @@ jobs:
         set -euo pipefail
 
         KM="${{ matrix.combo.keymap }}"
-        FM="${{ matrix.combo.format }}"   # bt | dongle | reset
+        FM="${{ matrix.combo.format }}"   # bt | reset
         NM="${{ matrix.combo.name }}"
         BD="${{ matrix.combo.board }}"    # nice_nano_v2
 
         declare -A LIST=(
-          [bt]="charybdis_left charybdis_right"
-          [dongle]="charybdis_left charybdis_right charybdis_dongle"
+          [bt]="scylla_left scylla_right"
           [reset]="settings_reset"
         )
 
@@ -157,7 +156,7 @@ jobs:
 
           # set keymap
           if [[ "$FM" != "reset" ]]; then
-            KEYMAP_OPTION="-DKEYMAP_FILE=overlays/charybdis.keymap"
+            KEYMAP_OPTION="-DKEYMAP_FILE=overlays/scylla.keymap"
           else
             KEYMAP_OPTION=""
           fi
@@ -196,7 +195,7 @@ jobs:
     - name: Upload firmware bundle
       uses: actions/upload-artifact@v4
       with:
-        name: charybdis-${{ matrix.combo.name }}
+        name: scylla-${{ matrix.combo.name }}
         path: ${{ github.workspace }}/out/${{ matrix.combo.name }}/**
 
 # ──────────────────────────────────────────────────────────────

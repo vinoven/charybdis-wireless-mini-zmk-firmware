@@ -35,26 +35,14 @@ docker-compose run --rm builder
 
 ### 3. Firmware Output
 
-Firmware files will be placed in under the firmwares directory in the root of the repo on your host. They will be grouped by format (bt/dongle) and keymap:
+Firmware files will be placed in under the firmwares directory in the root of the repo on your host. They will be grouped by format (bt) and keymap:
 
 ```bash
 firmwares/
-├── charybdis_bt
-│   ├── colemak_dh
-│   │   ├── charybdis_left.uf2
-│   │   └── charybdis_right.uf2
+├── scylla_bt
 │   └── qwerty
-│       ├── charybdis_left.uf2
-│       └── charybdis_right.uf2
-├── charybdis_dongle
-│   ├── colemak_dh
-│   │   ├── charybdis_dongle.uf2
-│   │   ├── charybdis_left.uf2
-│   │   └── charybdis_right.uf2
-│   └── qwerty
-│       ├── charybdis_dongle.uf2
-│       ├── charybdis_left.uf2
-│       └── charybdis_right.uf2
+│       ├── scylla_left.uf2
+│       └── scylla_right.uf2
 └── settings_reset.uf2
 ```
 
